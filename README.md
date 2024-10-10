@@ -4,7 +4,6 @@
 1. [Design](#design)
 1. [Features](#features)
 1. [Technologies Used](#technologies-used)
-1. [Installation](#installation)
 
 ## Description
 
@@ -24,4 +23,4 @@ The purpose of this project is to manage tasks based on priority. I created this
 
 ## Technologies Used
 
-C++ , Linked List
+- C++ 

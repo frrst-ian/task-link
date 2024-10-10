@@ -11,10 +11,12 @@ using namespace std;
 #define MAGENTA "\033[35m"
 #define CYAN "\033[36m"
 
+// Task node 
 struct TaskNode {
   string taskName;
   int priority;
   TaskNode *next, *prev;
+  // Task constructor
   TaskNode(string new_task, int new_priority) {
     taskName = new_task;
     priority = new_priority;
@@ -22,6 +24,7 @@ struct TaskNode {
   }
 };
 
+// Print list function
 void printList(TaskNode *head) {
   if (!head) {
     return;
@@ -45,6 +48,7 @@ void printList(TaskNode *head) {
   cout << '\n';
 }
 
+// Function for adding task
 TaskNode *addTask(TaskNode *head, string task_name, int task_priority) {
   TaskNode *newTask = new TaskNode(task_name, task_priority);
   if (!head || task_priority >= head->priority) {
@@ -65,6 +69,7 @@ TaskNode *addTask(TaskNode *head, string task_name, int task_priority) {
   return head;
 }
 
+// Function for deleting task
 TaskNode *deleteTask(TaskNode *head, int pos) {
   if (pos < 1) {
     cout << "Pos out of bounds";
@@ -95,6 +100,7 @@ TaskNode *deleteTask(TaskNode *head, int pos) {
   return head;
 }
 
+ // Example task
 void exampleTask() {
   TaskNode *head = new TaskNode("Shopping", 3),
            *firsTask = new TaskNode("Gym", 2),
@@ -112,9 +118,11 @@ void exampleTask() {
   return printList(head);
 }
 
+// Main function
 int main() {
   TaskNode *head = nullptr;
 
+  // ASCII art title
   cout << BLUE
        << "######     ##      ####    ##  ##            ##        ####    ##  "
           "##   ##  ##\n"
@@ -138,6 +146,7 @@ int main() {
           "  ##  ##\n\n"
        << RESET;
 
+  // User interaction
   while (true) {
     cout << GREEN
          << "=================================================================="
