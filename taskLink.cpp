@@ -1,11 +1,5 @@
 #include <iostream>
-// Task Scheduling: Circular linked lists can be used to implement task
-// scheduling algorithms,
-//  where each node in the list represents a task and its priority.
-//   The “next” pointer can point to the next task in the queue, with the end of
-//   the queue pointing back to the beginning to create a circular structure.
-//  This allows for a continuous loop of task scheduling, where tasks are added
-//  and removed from the queue based on their priority.
+
 using namespace std;
 
 // ANSI escape codes for text colors
@@ -15,7 +9,7 @@ using namespace std;
 #define YELLOW "\033[33m"
 #define BLUE "\033[34m"
 #define MAGENTA "\033[35m"
-#define CYAN "\03[36m"
+#define CYAN "\033[36m"
 
 struct TaskNode {
   string taskName;
@@ -34,9 +28,14 @@ void printList(TaskNode *head) {
   }
   TaskNode *curr = head;
   int count = 1;
+  cout << MAGENTA << "=============Task List=============\n" << RESET;
+  cout << YELLOW << " ID"
+       << "        Priority"
+       << "       Task Name\n"
+       << RESET;
   do {
-    cout << count++ << " " << curr->taskName << " " << curr->priority << " "
-         << '\n';
+    cout << " " << CYAN << count++ << RESET << "            " << curr->priority
+         << BLUE << "           " << curr->taskName << RESET << '\n';
     curr = curr->next;
 
     if (curr == nullptr)
@@ -71,13 +70,13 @@ TaskNode *deleteTask(TaskNode *head, int pos) {
     cout << "Pos out of bounds";
     return head;
   }
-  // 1-2-3
+
   TaskNode *curr = head;
   for (int i = 1; i < pos && curr != nullptr; i++) {
     curr = curr->next;
   }
   if (curr == nullptr) {
-    cout << "Task empty";
+    cout << RED << "Task empty\n" << RESET;
     return head;
   }
 
@@ -116,60 +115,138 @@ void exampleTask() {
 int main() {
   TaskNode *head = nullptr;
 
+  cout << BLUE
+       << "######     ##      ####    ##  ##            ##        ####    ##  "
+          "##   ##  ##\n"
+       << "  "
+       << "##      ####    ##  ##   ## ##             ##         ##     ### ## "
+          "  ## ##\n"
+       << "  "
+       << "##     ##  ##   ##       ####              ##         ##     ###### "
+          "  ####\n"
+       << "  "
+       << "##     ######    ####    ###               ##         ##     ###### "
+          "  ###\n"
+       << "  "
+       << "##     ##  ##       ##   ####              ##         ##     ## ### "
+          "  ####\n"
+       << "  "
+       << "##     ##  ##   ##  ##   ## ##             ##         ##     ##  ## "
+          "  ## ##\n"
+       << "  "
+       << "##     ##  ##    ####    ##  ##            ######    ####    ##  ## "
+          "  ##  ##\n\n"
+       << RESET;
+
   while (true) {
     cout << GREEN
-         << "To get started, please enter one of the numbers below "
+         << "=================================================================="
+            "===============\n"
+         << RESET
+         << " To get started, please enter one of the numbers below "
             "(e.g 1 <Enter> to "
             "add task)\n"
-         << "[1] - Add task\n"
-         << "[2] - View task\n"
-         << "[3] - Delete task\n"
-         << "[4] - Load an example task\n"
-         << "[5] - Help\n"
-         << "[0] - Exit the program\n"
-         << "Enter your choice: " << RESET;
+         << " [1] - Add task\n"
+         << " [2] - View tasks\n"
+         << " [3] - Delete task\n"
+         << " [4] - Load an example task list\n"
+         << " [5] - Help\n"
+         << " [0] - Exit the program\n"
+         << GREEN
+         << "=================================================================="
+            "===============\n"
+         << RESET << GREEN << "Enter your choice: " << RESET;
     int choice;
     string taskName;
     int priority, id;
     char userInput;
     cin >> choice;
-
+    if (cin.fail()) {
+      cout << "Invalid input. Try again..." << '\n';
+      exit(1);
+    }
     switch (choice) {
     case 1:
       do {
         cout << "Enter task name: ";
         cin >> taskName;
-        cout << "Enter priority: ";
+        cout << "Enter task priority(3 - High , 2 - Medium , 3 - Low): ";
 
         cin >> priority;
+        if (priority < 1 || priority > 3) {
+          cout << RED << "PRIORITY IS INVALID!. EXITING THE PROGRAM...\n"
+               << RESET;
+          return 1;
+        }
 
         head = addTask(head, taskName, priority);
+        cout << BLUE << "Task added\n" << RESET;
         printList(head);
         cout << "Do you want to add another task?(y/n): ";
         cin >> userInput;
       } while (userInput == 'y' || userInput == 'Y');
       break;
     case 2:
-      if (!head) {
-        cout << "Task Empty\n";
-      }
-      printList(head);
+      do {
+        if (!head) {
+          cout << RED << "Task Empty!\n" << RESET;
+        }
+        printList(head);
+
+        cout << "Do you want to go back to the menu? (y/n): ";
+        cin >> userInput;
+        if (userInput == 'n' || userInput == 'N') {
+          cout << "Exiting the program...Thank you!\n";
+          return 1;
+        }
+      } while (userInput == 'n' || userInput == 'N');
       break;
     case 3:
-      cout << "Enter task ID: ";
-      cin >> id;
-      head = deleteTask(head, id);
-      printList(head);
+      do {
+        cout << "Enter task ID: ";
+        cin >> id;
+        if (cin.fail()) {
+          cout << "Invalid input. Exiting program..." << '\n';
+          return 1;
+        }
+        head = deleteTask(head, id);
+        printList(head);
+        cout << "Do you want to delete another task?(y/n): ";
+        cin >> userInput;
+      } while (userInput == 'y' || userInput == 'Y');
       break;
     case 4:
-      exampleTask();
-      printList(head);
+      do {
+        exampleTask();
+        printList(head);
+        cout << "Do you want to go back to the menu? (y/n): ";
+        cin >> userInput;
+        if (userInput == 'n' || userInput == 'N') {
+          cout << "Exiting the program...\n";
+
+          return 1;
+        }
+      } while (userInput == 'n' || userInput == 'N');
+
       break;
     case 5:
-      cout << "To add task enter 1 <Enter>\n";
-      cout << "To view task enter 2 <Enter>\n";
-      cout << "To delete a task enter 3 <Enter>\n";
-      cout << "To exit the program enter 0 <Enter>\n";
+      do {
+        cout << "To add task enter 1 <Enter>\n";
+        cout << "To view task enter 2 <Enter>\n";
+        cout << "To delete a task enter 3 <Enter>\n";
+        cout << "To exit the program enter 0 <Enter>\n";
+        cout << "Do you want to go back to the menu? (y/n): ";
+        cin >> userInput;
+        if (userInput == 'n' || userInput == 'N') {
+          cout << "Exiting the program...Thank you!\n";
+          return 1;
+        }
+      } while (userInput == 'n' || userInput == 'N');
+
+      break;
+    case 0:
+      cout << "Exiting the program. Thank you!\n";
+      return 1;
       break;
     default:
       cout << RED
