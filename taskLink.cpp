@@ -28,32 +28,75 @@ struct TaskNode {
   }
 };
 
+void printList(TaskNode *head) {
+  if (!head) {
+    return;
+  }
+  TaskNode *curr = head;
+  int count = 1;
+  do {
+    cout << count++ << " " << curr->taskName << " " << curr->priority << " "
+         << '\n';
+    curr = curr->next;
+
+    if (curr == nullptr)
+      return;
+
+  } while (curr != head);
+  cout << '\n';
+}
+
 TaskNode *addTask(TaskNode *head, string task_name, int task_priority) {
   TaskNode *newTask = new TaskNode(task_name, task_priority);
-  if (task_priority == 1) {
+  if (!head || task_priority >= head->priority) {
     newTask->next = head;
-    if (head != nullptr) {
+    if (head)
       head->prev = newTask;
-    }
-    head = newTask;
-    return head;
-  } //<5>
-  // 1<->3<->4
+    return newTask;
+  }
   TaskNode *curr = head;
-  for (int i = 1; i < task_priority - 1 && curr != nullptr; i++) {
+  while (curr->next && curr->next->priority >= task_priority) {
     curr = curr->next;
   }
-
   newTask->next = curr->next;
   newTask->prev = curr;
+  if (curr->next)
+    curr->next->prev = newTask;
   curr->next = newTask;
-  if (newTask->next != nullptr) {
-    newTask->next->prev = newTask;
-  }
   return head;
 }
 
-TaskNode *exampleTask() {
+TaskNode *deleteTask(TaskNode *head, int pos) {
+  if (pos < 1) {
+    cout << "Pos out of bounds";
+    return head;
+  }
+  // 1-2-3
+  TaskNode *curr = head;
+  for (int i = 1; i < pos && curr != nullptr; i++) {
+    curr = curr->next;
+  }
+  if (curr == nullptr) {
+    cout << "Task empty";
+    return head;
+  }
+
+  if (curr->prev != nullptr) {
+    curr->prev->next = curr->next;
+  }
+
+  if (curr->next != nullptr) {
+    curr->next->prev = curr->prev;
+  }
+
+  if (head == curr) {
+    head = curr->next;
+  }
+  delete curr;
+  return head;
+}
+
+void exampleTask() {
   TaskNode *head = new TaskNode("Shopping", 3),
            *firsTask = new TaskNode("Gym", 2),
            *secondTask = new TaskNode("Coding", 1),
@@ -67,21 +110,73 @@ TaskNode *exampleTask() {
   thirdTask->prev = secondTask;
   thirdTask->next = head;
   head->prev = thirdTask;
-  return head;
-}
-
-void printList(TaskNode *head) {
-  if (!head)
-    return;
-  TaskNode *curr = head;
-  do {
-    cout << curr->taskName << " " << curr->priority << " ";
-    curr = curr->next;
-  } while (curr != head);
+  return printList(head);
 }
 
 int main() {
-  TaskNode *head;
-  head = exampleTask();
-  printList(head);
+  TaskNode *head = nullptr;
+
+  while (true) {
+    cout << GREEN
+         << "To get started, please enter one of the numbers below "
+            "(e.g 1 <Enter> to "
+            "add task)\n"
+         << "[1] - Add task\n"
+         << "[2] - View task\n"
+         << "[3] - Delete task\n"
+         << "[4] - Load an example task\n"
+         << "[5] - Help\n"
+         << "[0] - Exit the program\n"
+         << "Enter your choice: " << RESET;
+    int choice;
+    string taskName;
+    int priority, id;
+    char userInput;
+    cin >> choice;
+
+    switch (choice) {
+    case 1:
+      do {
+        cout << "Enter task name: ";
+        cin >> taskName;
+        cout << "Enter priority: ";
+
+        cin >> priority;
+
+        head = addTask(head, taskName, priority);
+        printList(head);
+        cout << "Do you want to add another task?(y/n): ";
+        cin >> userInput;
+      } while (userInput == 'y' || userInput == 'Y');
+      break;
+    case 2:
+      if (!head) {
+        cout << "Task Empty\n";
+      }
+      printList(head);
+      break;
+    case 3:
+      cout << "Enter task ID: ";
+      cin >> id;
+      head = deleteTask(head, id);
+      printList(head);
+      break;
+    case 4:
+      exampleTask();
+      printList(head);
+      break;
+    case 5:
+      cout << "To add task enter 1 <Enter>\n";
+      cout << "To view task enter 2 <Enter>\n";
+      cout << "To delete a task enter 3 <Enter>\n";
+      cout << "To exit the program enter 0 <Enter>\n";
+      break;
+    default:
+      cout << RED
+           << "Your choice is Invalid! Please enter a valid number and try "
+              "again.\n"
+           << RESET;
+      break;
+    }
+  }
 }
