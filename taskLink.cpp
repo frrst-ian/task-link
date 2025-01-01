@@ -179,7 +179,7 @@ int main() {
       do {
         cout << "Enter task name: ";
         cin >> taskName;
-        cout << "Enter task priority(3 - High , 2 - Medium , 3 - Low): ";
+        cout << "Enter task priority(3 - High , 2 - Medium , 1 - Low): ";
 
         cin >> priority;
         if (priority < 1 || priority > 3) {
